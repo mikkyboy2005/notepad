@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:notepad/database/model.dart';
+import 'package:notepad/pages/notes_page.dart';
+import 'package:notepad/util/navigate.dart';
+import 'package:notepad/util/increment_counter.dart';
 
 class AddNotePage extends StatefulWidget {
   @override
@@ -12,27 +16,10 @@ class AddNotePage extends StatefulWidget {
 class _AddNotePageState extends State<AddNotePage> {
   var now = new DateTime.now();
 
-  String finalDate = '';
-
-  getCurrentDate() {
-    setState(() {
-      var date = DateTime.now().toString();
-
-      var dataParse = DateTime.parse(date);
-
-      finalDate = DateFormat('MMMM dd, yyyy HH:mm').format(dataParse);
-    });
-  }
-
   bool validate = false;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    getCurrentDate();
-  }
-
-  final _text = TextEditingController();
+  final noteTitle = TextEditingController();
+  final noteContent = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +40,7 @@ class _AddNotePageState extends State<AddNotePage> {
         ),
         actions: [
           Visibility(
-            visible: _text.text.isNotEmpty,
+            visible: noteContent.text.isNotEmpty,
             child: IconButton(
               tooltip: 'Done',
               disabledColor: Colors.grey,
@@ -62,19 +49,24 @@ class _AddNotePageState extends State<AddNotePage> {
                 color: Colors.blue,
               ),
               onPressed: () async {
-                setState(() {
-                  _text.text.isEmpty ? validate = false : validate = true;
-                  print('Note validate = $validate');
+                noteContent.text.isEmpty ? validate = false : validate = true;
+                print('Note validate = $validate');
 
-                  // Quickly collapse android keyboard.
-                  if (validate == true) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    Future.delayed(
-                      Duration(milliseconds: 100),
-                      () => Navigator.pop(context),
-                    );
-                  }
-                });
+                Note added = await IncrementCounter.incrementCounter(
+                  noteTitle.text,
+                  noteContent.text,
+                  now.toIso8601String(),
+                );
+
+                // Quickly collapse android keyboard.
+                if (validate == true) {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  Future.delayed(
+                    Duration(milliseconds: 100),
+                  );
+                  Navigate.pushPage(context, NotesPage());
+                }
+                setState(() {});
               },
             ),
           ),
@@ -88,9 +80,10 @@ class _AddNotePageState extends State<AddNotePage> {
               Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Text(
-                  '$finalDate',
+                  '${DateFormat('MMMM dd, yyyy HH:mm').format(now)}',
                   style: TextStyle(
                     fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -99,6 +92,7 @@ class _AddNotePageState extends State<AddNotePage> {
           Padding(
             padding: const EdgeInsets.only(left: 17.0, top: 10.0),
             child: TextFormField(
+              controller: noteTitle,
               decoration: const InputDecoration.collapsed(
                 hintText: 'Title',
               ),
@@ -110,7 +104,7 @@ class _AddNotePageState extends State<AddNotePage> {
             child: Padding(
               padding: const EdgeInsets.only(left: 17.0, top: 30),
               child: TextField(
-                controller: _text,
+                controller: noteContent,
                 decoration: InputDecoration.collapsed(
                   hintText: 'Note Something down',
                 ),
