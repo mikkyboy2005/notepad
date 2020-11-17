@@ -38,7 +38,7 @@ class _AddNotePageState extends State<AddNotePage> {
           'Note',
           style: TextStyle(color: Colors.black),
         ),
-        actions: [
+        actions: [ 
           Visibility(
             visible: noteContent.text.isNotEmpty,
             child: IconButton(

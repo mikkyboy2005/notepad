@@ -28,7 +28,7 @@ class NoteHelper {
 
   initDb() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = "${documentDirectory.path}/notessss.db";
+    String path = "${documentDirectory.path}/notes.db";
     print(path);
 
     var ourDb = await openDatabase(
@@ -56,9 +56,14 @@ class NoteHelper {
     return note;
   }
 
-  Future<List> getNotes() async {
+  // Future<List> getNotes() async {
+  //   var dbClient = await db;
+  //   var res = await dbClient.rawQuery("SELECT * FROM $tableName");
+  //   return res.toList();
+  // }
+
+  getNotes() async {
     var dbClient = await db;
-    var res = await dbClient.rawQuery("SELECT * FROM $tableName");
-    return res.toList();
+    return await dbClient.query(tableName);
   }
 }
