@@ -71,17 +71,18 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blue,
+                        color: Colors.grey.withOpacity(0.14),
                       ),
                       borderRadius: BorderRadius.all(
                         Radius.circular(44.0),
                       ),
                     ),
                     filled: true,
+                    fillColor: Colors.grey.withOpacity(0.14),
                     hintStyle: TextStyle(
-                      color: Colors.grey[800],
+                      color: Colors.grey[600],
                     ),
-                    hintText: "Search Bar",
+                    hintText: "Search notes",
                   ),
                 ),
               ],
@@ -95,19 +96,39 @@ class _NotesPageState extends State<NotesPage> {
                   return Padding(
                     padding: EdgeInsets.only(left: 8.0, right: 8.0),
                     child: Card(
-                      color: Colors.grey.withOpacity(0.4),
+                      color: Colors.grey.withOpacity(0.14),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(noteList[index].title),
+                        contentPadding:
+                            EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
+                        title: Text(
+                          noteList[index].title,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        subtitle: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  noteList[index].content,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(noteList[index].dateTime),
+                              ],
+                            ),
                           ],
                         ),
-                        subtitle: Text(noteList[index].dateTime),
                       ),
                     ),
                   );
